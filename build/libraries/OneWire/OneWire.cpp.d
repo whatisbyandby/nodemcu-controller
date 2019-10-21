@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/libraries/OneWire/OneWire.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/libraries/OneWire/OneWire.cpp.o: \
  /Users/scottperkins/Documents/Arduino/libraries/OneWire/OneWire.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Arduino.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/stdlib.h \

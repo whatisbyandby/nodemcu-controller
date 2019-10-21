@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/libraries/DallasTemperature/DallasTemperature.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/libraries/DallasTemperature/DallasTemperature.cpp.o: \
  /Users/scottperkins/Documents/Arduino/libraries/DallasTemperature/DallasTemperature.cpp \
  /Users/scottperkins/Documents/Arduino/libraries/DallasTemperature/DallasTemperature.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/inttypes.h \

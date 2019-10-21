@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/core/Updater.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/core/Updater.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Updater.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Updater.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Arduino.h \
@@ -68,7 +68,7 @@
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/eboot_command.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/interrupts.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/esp8266_peri.h \
- /Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/core/Updater_Signing.h \
+ /Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/core/Updater_Signing.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/include/spi_flash.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/include/user_interface.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/include/os_type.h \

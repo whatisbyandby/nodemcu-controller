@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/libraries/ESP8266WiFi/ESP8266WiFiGeneric.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/libraries/ESP8266WiFi/ESP8266WiFiGeneric.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/libraries/ESP8266WiFi/src/ESP8266WiFiGeneric.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/string.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/_ansi.h \

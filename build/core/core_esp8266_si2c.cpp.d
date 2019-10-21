@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/core/core_esp8266_si2c.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/core/core_esp8266_si2c.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/core_esp8266_si2c.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/twi.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Arduino.h \

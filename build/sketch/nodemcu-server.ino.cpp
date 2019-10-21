@@ -1,5 +1,4 @@
-#line 1 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
-#line 1 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 1 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
@@ -14,6 +13,8 @@
 
 const String UUID = "aabe63e0-576e-4993-8e57-e15a8528f46f";
 const String chipId = String(ESP.getChipId(), HEX);
+String topic;
+
 // GPIO where the DS18B20 is connected to
 const int oneWireBus = 4;
 
@@ -42,6 +43,7 @@ enum state
 };
 
 state currentState = CORRECT;
+bool running = false;
 
 int heaterPin = 12;
 int coolerPin = 13;
@@ -52,31 +54,38 @@ unsigned long dataInterval = 1000;
 
 //END OF GLOBAL VARIABLES
 
-#line 53 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 56 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
+void initalizeWebsocket();
+#line 63 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length);
-#line 87 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 94 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void handleGetRequest();
-#line 103 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 112 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void handlePostRequest();
-#line 138 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 156 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void setup();
-#line 184 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
-void handleStateRequest(DynamicJsonDocument requestDoc);
-#line 188 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 198 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 state compareTemps(float currentTemperature);
-#line 216 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 226 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void setNewState(state newState);
-#line 235 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 245 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void turnHeaterOn();
-#line 241 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 251 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void turnCoolerOn();
-#line 247 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 257 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void turnAllOff();
-#line 253 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 263 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void getNewData();
-#line 302 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 311 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
 void loop();
-#line 53 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
+#line 56 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
+void initalizeWebsocket(){
+  webSocket.begin("192.168.0.13", 8765, "/ws/topic/" + topic + "/asset/" + UUID);
+  webSocket.onEvent(webSocketEvent);
+  webSocket.setReconnectInterval(5000);
+  webSocket.enableHeartbeat(15000, 3000, 2);
+}
+
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
 
@@ -96,9 +105,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
   case WStype_BIN:
     Serial.printf("[WSc] get binary length: %u\n", length);
     hexdump(payload, length);
-
-    // send data to server
-    // webSocket.sendBIN(payload, length);
     break;
   case WStype_PING:
     // pong will be send automatically
@@ -116,6 +122,8 @@ void handleGetRequest()
   DynamicJsonDocument doc(1024);
   JsonObject responseObj = doc.to<JsonObject>();
 
+  responseObj["running"] = running;
+  responseObj["topic"] = topic;
   responseObj["setTemp"] = setTemp;
   responseObj["tempRange"] = tempRange;
   responseObj["heaterPin"] = heaterPin;
@@ -141,16 +149,25 @@ void handlePostRequest()
     return;
   }
 
+  bool newRunning = doc["running"];
+  running = newRunning != NULL ? newRunning : running;
   float newSetTemp = doc["setTemp"];
   setTemp = newSetTemp > 1 ? newSetTemp : setTemp;
   float newTempRange = doc["tempRange"];
   tempRange = newTempRange > 0.1 ? newTempRange : tempRange;
   float newDataInterval = doc["dataInterval"];
   dataInterval = newDataInterval > 1 ? newDataInterval : dataInterval;
-
+  String newTopic = doc["topic"];
+  if (topic != newTopic && newTopic != NULL){
+    topic = newTopic;
+    initalizeWebsocket();
+  }
+  
   DynamicJsonDocument responseDoc(1024);
   JsonObject responseObj = responseDoc.to<JsonObject>();
 
+  responseObj["running"] = running;
+  responseObj["topic"] = topic;
   responseObj["setTemp"] = setTemp;
   responseObj["tempRange"] = tempRange;
   responseObj["heaterPin"] = heaterPin;
@@ -202,14 +219,6 @@ void setup()
   server.begin();
 
   sensors.begin();
-  webSocket.begin("192.168.0.13", 8765, "/ws/asset/" + UUID + "/channel/TEMP01");
-  webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(5000);
-  webSocket.enableHeartbeat(15000, 3000, 2);
-}
-
-void handleStateRequest(DynamicJsonDocument requestDoc)
-{
 }
 
 state compareTemps(float currentTemperature)
@@ -288,7 +297,6 @@ void getNewData()
   state newState = compareTemps(currentTemp);
   setNewState(newState);
 
-  obj["measurement"] = "fermentation";
   JsonArray fields = obj.createNestedArray("fields");
 
   DynamicJsonDocument stateDoc(256);
@@ -331,8 +339,9 @@ void loop()
   currentMillis = millis();
   server.handleClient();
   webSocket.loop();
-  if (currentMillis - startMillis >= dataInterval)
-  {
-    getNewData();
-  }
+  if (currentMillis - startMillis >= dataInterval && running)
+    {
+      getNewData();
+    }
+
 }

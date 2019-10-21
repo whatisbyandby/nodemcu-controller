@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/libraries/Hash/sha1/sha1.c.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/libraries/Hash/sha1/sha1.c.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/libraries/Hash/src/sha1/sha1.c \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/stdio.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/_ansi.h \

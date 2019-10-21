@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/core/Esp-frag.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/core/Esp-frag.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/Esp-frag.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/umm_malloc/umm_malloc.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/umm_malloc/umm_malloc_cfg.h \

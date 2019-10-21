@@ -1,19 +1,20 @@
-# 1 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
-# 1 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino"
-# 2 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
+# 1 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino"
+# 2 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
 
-# 4 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
-# 5 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
-# 6 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
-# 7 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
+# 4 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
+# 5 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
+# 6 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
+# 7 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
 
-# 9 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
+# 9 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
 
-# 11 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
-# 12 "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" 2
+# 11 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
+# 12 "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" 2
 
 const String UUID = "aabe63e0-576e-4993-8e57-e15a8528f46f";
 const String chipId = String(ESP.getChipId(), 16);
+String topic;
+
 // GPIO where the DS18B20 is connected to
 const int oneWireBus = 4;
 
@@ -42,6 +43,7 @@ enum state
 };
 
 state currentState = CORRECT;
+bool running = false;
 
 int heaterPin = 12;
 int coolerPin = 13;
@@ -51,6 +53,13 @@ unsigned long currentMillis;
 unsigned long dataInterval = 1000;
 
 //END OF GLOBAL VARIABLES
+
+void initalizeWebsocket(){
+  webSocket.begin("192.168.0.13", 8765, "/ws/topic/" + topic + "/asset/" + UUID);
+  webSocket.onEvent(webSocketEvent);
+  webSocket.setReconnectInterval(5000);
+  webSocket.enableHeartbeat(15000, 3000, 2);
+}
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
@@ -71,9 +80,6 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
   case WStype_BIN:
     Serial.printf("[WSc] get binary length: %u\n", length);
     hexdump(payload, length);
-
-    // send data to server
-    // webSocket.sendBIN(payload, length);
     break;
   case WStype_PING:
     // pong will be send automatically
@@ -91,6 +97,8 @@ void handleGetRequest()
   DynamicJsonDocument doc(1024);
   JsonObject responseObj = doc.to<JsonObject>();
 
+  responseObj["running"] = running;
+  responseObj["topic"] = topic;
   responseObj["setTemp"] = setTemp;
   responseObj["tempRange"] = tempRange;
   responseObj["heaterPin"] = heaterPin;
@@ -111,21 +119,30 @@ void handlePostRequest()
   // Test if parsing succeeds.
   if (error)
   {
-    Serial.print(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom.text." "/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/nodemcu-server.ino" "." "112" "." "0" "\""))) = ("deserializeJson() failed: "); &__c[0];}))))));
+    Serial.print(((reinterpret_cast<const __FlashStringHelper *>((__extension__({static const char __c[] __attribute__((__aligned__(4))) __attribute__((section( "\".irom.text." "/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/nodemcu-server.ino" "." "121" "." "0" "\""))) = ("deserializeJson() failed: "); &__c[0];}))))));
     Serial.println(error.c_str());
     return;
   }
 
+  bool newRunning = doc["running"];
+  running = newRunning != __null ? newRunning : running;
   float newSetTemp = doc["setTemp"];
   setTemp = newSetTemp > 1 ? newSetTemp : setTemp;
   float newTempRange = doc["tempRange"];
   tempRange = newTempRange > 0.1 ? newTempRange : tempRange;
   float newDataInterval = doc["dataInterval"];
   dataInterval = newDataInterval > 1 ? newDataInterval : dataInterval;
+  String newTopic = doc["topic"];
+  if (topic != newTopic && newTopic != __null){
+    topic = newTopic;
+    initalizeWebsocket();
+  }
 
   DynamicJsonDocument responseDoc(1024);
   JsonObject responseObj = responseDoc.to<JsonObject>();
 
+  responseObj["running"] = running;
+  responseObj["topic"] = topic;
   responseObj["setTemp"] = setTemp;
   responseObj["tempRange"] = tempRange;
   responseObj["heaterPin"] = heaterPin;
@@ -177,14 +194,6 @@ void setup()
   server.begin();
 
   sensors.begin();
-  webSocket.begin("192.168.0.13", 8765, "/ws/asset/" + UUID + "/channel/TEMP01");
-  webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(5000);
-  webSocket.enableHeartbeat(15000, 3000, 2);
-}
-
-void handleStateRequest(DynamicJsonDocument requestDoc)
-{
 }
 
 state compareTemps(float currentTemperature)
@@ -263,7 +272,6 @@ void getNewData()
   state newState = compareTemps(currentTemp);
   setNewState(newState);
 
-  obj["measurement"] = "fermentation";
   JsonArray fields = obj.createNestedArray("fields");
 
   DynamicJsonDocument stateDoc(256);
@@ -306,8 +314,9 @@ void loop()
   currentMillis = millis();
   server.handleClient();
   webSocket.loop();
-  if (currentMillis - startMillis >= dataInterval)
-  {
-    getNewData();
-  }
+  if (currentMillis - startMillis >= dataInterval && running)
+    {
+      getNewData();
+    }
+
 }

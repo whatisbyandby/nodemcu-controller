@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/libraries/ESP8266WiFi/WiFiClient.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/libraries/ESP8266WiFi/WiFiClient.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/libraries/ESP8266WiFi/src/WiFiClient.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/libraries/ESP8266WiFi/src/include/wl_definitions.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/include/osapi.h \

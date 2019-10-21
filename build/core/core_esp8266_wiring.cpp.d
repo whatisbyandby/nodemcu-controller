@@ -1,4 +1,4 @@
-/Users/scottperkins/Documents/BreweryController/Nodemcu-Controller/build/core/core_esp8266_wiring.cpp.o: \
+/Users/scottperkins/Documents/BreweryControllers/nodemcu-controller/build/core/core_esp8266_wiring.cpp.o: \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/core_esp8266_wiring.cpp \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/cores/esp8266/wiring_private.h \
  /Users/scottperkins/Library/Arduino15/packages/esp8266/hardware/esp8266/2.5.2/tools/sdk/libc/xtensa-lx106-elf/include/stdio.h \
